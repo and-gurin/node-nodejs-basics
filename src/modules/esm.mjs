@@ -1,17 +1,21 @@
-const path = require('path');
-const { release, version } = require('os');
-const { createServer: createServerHttp } = require('http');
-require('./files/c');
+import path from 'node:path';
+import { release, version } from 'node:os';
+import { createServer as createServerHttp } from 'node:http';
+import { fileURLToPath } from 'node:url';
+import { createRequire } from "node:module";
+import './files/c.js';
+
+const require = createRequire(import.meta.url);
 
 const random = Math.random();
 
 let unknownObject;
 
-if (random > 0.5) {
-    unknownObject = require('./files/a.json');
-} else {
-    unknownObject = require('./files/b.json');
-}
+random > 0.5 ? unknownObject = await require('./files/a.json') : await require('./files/b.json');
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 
 console.log(`Release ${release()}`);
 console.log(`Version ${version()}`);
@@ -33,7 +37,7 @@ myServer.listen(PORT, () => {
     console.log('To terminate it, use Ctrl+C combination');
 });
 
-module.exports = {
+export {
     unknownObject,
     myServer,
 };
